@@ -90,7 +90,7 @@ def show_stats(db: LyricsDatabase) -> None:
 def main():
     """메인 함수"""
     parser = argparse.ArgumentParser(
-        description='태연의 일일 랜덤 가사를 표시합니다.',
+        description='가사 데이터베이스에서 랜덤 가사를 표시합니다.',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 예시:
@@ -143,7 +143,7 @@ def main():
 
     if args.random:
         chunk = get_random_lyric(db.get_all_chunks())
-        print("\n🎲 완전 랜덤 가사:")
+        print("\n🎲 랜덤 가사:")
 
     elif args.date:
         target_date = parse_date(args.date)
