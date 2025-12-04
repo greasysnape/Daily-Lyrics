@@ -1,0 +1,33 @@
+{
+  "track_number": 1,
+  "title": "인사 (Panorama)",
+  "album": "Panorama : The Best of TAEYEON - The 10th Anniversary Best Album",
+  "year": 2025,
+  "artist": "태연 (TAEYEON)",
+  "chunks": [
+    {
+      "id": 1,
+      "lines": [
+        "바라보면 아프게 웃던",
+        "그만큼 더 아름다웠던",
+        "그때의 너와 나에게",
+        "손 흔들어 인사를 건네"
+      ]
+    },
+    {
+      "id": 2,
+      "lines": [
+        "한 걸음씩 계속 걸어가",
+        "소리 높여 외치는 Goodbye"
+      ]
+    },
+    {
+      "id": 3,
+      "lines": [
+        "모든 걸 뒤로 한 그때",
+        "펼쳐져 내 앞에 다",
+        "전부 새롭게"
+      ]
+    }
+  ]
+}

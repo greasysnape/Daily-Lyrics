@@ -44,11 +44,11 @@ htmlcov/
 
 # Project specific
 *.log
-data/
-!data/.gitkeep
+
+data/*
 !data/example_album/
 !data/example_album/example_track.json
-lyrics_input/
-!lyrics_input/.gitkeep
+
+lyrics_input/*
 !lyrics_input/example_album/
 !lyrics_input/example_album/example_track.txt
