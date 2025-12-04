@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- 서비스 이름 -->
+    <key>Label</key>
+    <string>com.dailylyrics.widget</string>
+
+    <!-- 실행할 프로그램과 인자 -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/homebrew/bin/python3.11</string>
+        <string>-m</string>
+        <string>uvicorn</string>
+        <string>src.widget_service:app</string>
+        <string>--host</string>
+        <string>0.0.0.0</string>
+        <string>--port</string>
+        <string>58384</string>
+    </array>
+
+    <!-- 작업 디렉토리 -->
+    <key>WorkingDirectory</key>
+    <string>/Users/cky/Documents/CKY/Daily Lyrics</string>
+
+    <!-- 로그인 시 자동 시작 -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- 종료되면 자동 재시작 -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- 표준 출력 로그 -->
+    <key>StandardOutPath</key>
+    <string>/Users/cky/Documents/CKY/Daily Lyrics/logs/widget_service.log</string>
+
+    <!-- 표준 에러 로그 -->
+    <key>StandardErrorPath</key>
+    <string>/Users/cky/Documents/CKY/Daily Lyrics/logs/widget_service_error.log</string>
+</dict>
+</plist>

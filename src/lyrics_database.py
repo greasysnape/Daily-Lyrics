@@ -33,10 +33,10 @@ class LyricsDatabase:
         self.albums_count = 0
         self.tracks_count = 0
 
-        # data/ 안의 모든 앨범 폴더 찾기
+        # data/ 안의 모든 앨범 폴더 찾기 (example_album 제외)
         album_folders = sorted([
             f for f in self.data_dir.iterdir()
-            if f.is_dir() and not f.name.startswith('.')
+            if f.is_dir() and not f.name.startswith('.') and 'example' not in f.name.lower()
         ])
 
         if not album_folders:

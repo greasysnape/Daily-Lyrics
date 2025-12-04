@@ -1,0 +1,15 @@
+// build.gradle.kts (Module: app)에 추가할 의존성
+
+dependencies {
+    // Kotlin Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Kotlin Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+}
+
+// 파일 최상단에 플러그인 추가:
+plugins {
+    // ... 기존 플러그인들
+    kotlin("plugin.serialization") version "1.9.0"
+}

@@ -210,9 +210,9 @@ class LyricsConverter:
                 print(f"❌ 유효한 폴더가 없습니다.")
                 return
         else:
-            # 모든 앨범 폴더 찾기
+            # 모든 앨범 폴더 찾기 (example_album 제외)
             album_folders = [f for f in self.input_dir.iterdir()
-                            if f.is_dir() and not f.name.startswith('.')]
+                            if f.is_dir() and not f.name.startswith('.') and 'example' not in f.name.lower()]
 
         if not album_folders:
             print(f"⚠️  '{self.input_dir}' 폴더에 앨범 폴더가 없습니다.")

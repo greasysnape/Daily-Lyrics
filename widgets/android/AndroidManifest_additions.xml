@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AndroidManifest.xml에 추가할 내용 -->
+
+<!--
+    <application> 태그 안에 다음 내용을 추가:
+-->
+
+<!-- 위젯 Provider 등록 -->
+<receiver
+    android:name=".LyricsWidget"
+    android:exported="true">
+    <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+    </intent-filter>
+    <meta-data
+        android:name="android.appwidget.provider"
+        android:resource="@xml/widget_info" />
+</receiver>
+
+<!--
+    <manifest> 태그 안에 다음 권한 추가:
+-->
+
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+<!--
+    Cleartext HTTP 허용 (로컬 서버 접근용)
+    <application> 태그에 다음 속성 추가:
+-->
+
+android:usesCleartextTraffic="true"

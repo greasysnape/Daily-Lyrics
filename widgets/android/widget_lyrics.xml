@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 위젯 레이아웃 -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@drawable/widget_background">
+
+    <!-- 정상 상태: 가사 표시 -->
+    <LinearLayout
+        android:id="@+id/widget_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="top"
+        android:visibility="visible">
+
+        <!-- 가사 텍스트 -->
+        <TextView
+            android:id="@+id/widget_lyrics_text"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:lineSpacingExtra="4dp"
+            android:text="익숙함에 수줍어\n네게 하지 못한 말\n노랫말에 가득 담아"
+            android:gravity="top" />
+
+        <!-- 곡 정보 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:id="@+id/widget_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="#666666"
+                android:textStyle="bold"
+                android:text="Playlist" />
+
+            <TextView
+                android:id="@+id/widget_album"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:textColor="#999999"
+                android:text="What Do I Call You (2020)" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 에러 상태 -->
+    <LinearLayout
+        android:id="@+id/widget_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📡"
+            android:textSize="32sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/widget_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#FF9800"
+            android:gravity="center"
+            android:text="서버 연결 필요" />
+    </LinearLayout>
+</FrameLayout>
