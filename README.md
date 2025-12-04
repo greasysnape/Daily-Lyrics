@@ -174,7 +174,7 @@ cron을 사용하여 매일 특정 시간에 가사 표시:
 crontab -e
 
 # 매일 오전 9시에 실행
-0 9 * * * cd "/Users/{username}/Path/to/Daily Lyrics" && /usr/bin/python3 cli.py
+0 9 * * * cd "/Path/to/Daily Lyrics" && /usr/bin/python3 cli.py
 ```
 
 ### 별칭 만들기
@@ -182,7 +182,7 @@ crontab -e
 `~/.zshrc` 또는 `~/.bashrc`에 추가:
 
 ```bash
-alias lyrics="python3 '/Users/{username}/Path/to/Daily Lyrics/cli.py'"
+alias lyrics="python3 '/Path/to/Daily Lyrics/cli.py'"
 ```
 
 이후 터미널에서 `lyrics` 명령어로 간단히 실행 가능

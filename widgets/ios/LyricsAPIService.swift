@@ -10,8 +10,8 @@ import Foundation
 class LyricsAPIService {
     static let shared = LyricsAPIService()
 
-    // API 베이스 URL (로컬호스트)
-    private let baseURL = "http://localhost:58384"
+    // API 베이스 URL (IPv4 주소 사용)
+    private let baseURL = "http://127.0.0.1:58384"
 
     private init() {}
 

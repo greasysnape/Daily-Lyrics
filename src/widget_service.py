@@ -11,8 +11,10 @@ Daily Lyrics Widget Service
 
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from datetime import datetime
 from typing import Optional
+from pathlib import Path
 import logging
 
 from src.lyrics_database import LyricsDatabase
@@ -130,7 +132,8 @@ def get_current_lyric(
                     "year": chunk['year'],
                     "artist": chunk.get('artist', '태연 (TAEYEON)'),
                     "timestamp": datetime.now().isoformat(),
-                    "interval": interval
+                    "interval": interval,
+                    "albumFolder": chunk.get('album_folder', '')
                 }
             }
         else:
@@ -184,7 +187,8 @@ def get_random_lyric_endpoint():
                     "album": chunk['album'],
                     "year": chunk['year'],
                     "artist": chunk.get('artist', '태연 (TAEYEON)'),
-                    "timestamp": datetime.now().isoformat()
+                    "timestamp": datetime.now().isoformat(),
+                    "albumFolder": chunk.get('album_folder', '')
                 }
             }
         else:
@@ -226,6 +230,41 @@ def get_statistics():
         }
     except Exception as e:
         logger.error(f"통계 조회 오류: {e}", exc_info=True)
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
+
+@app.get("/covers/{filename}")
+def get_album_cover(filename: str):
+    """
+    앨범 커버 이미지 제공
+
+    Args:
+        filename: 이미지 파일명 (예: 001_I.webp)
+
+    Returns:
+        이미지 파일
+    """
+    try:
+        cover_path = Path("data/covers") / filename
+
+        if not cover_path.exists():
+            logger.warning(f"앨범 커버 없음: {filename}")
+            return {
+                "success": False,
+                "error": f"Cover not found: {filename}"
+            }
+
+        # WebP, JPG, PNG 등 지원
+        return FileResponse(
+            cover_path,
+            media_type="image/webp" if filename.endswith(".webp") else "image/jpeg"
+        )
+
+    except Exception as e:
+        logger.error(f"앨범 커버 로드 오류: {e}", exc_info=True)
         return {
             "success": False,
             "error": str(e)

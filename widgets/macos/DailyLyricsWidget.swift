@@ -98,12 +98,18 @@ struct DailyLyricsWidgetView: View {
     let entry: LyricsEntry
 
     var body: some View {
-        if entry.isError {
-            // 에러 상태
-            ErrorView(message: entry.errorMessage ?? "알 수 없는 오류")
-        } else if let lyrics = entry.lyrics {
-            // 정상 상태
-            LyricsView(lyrics: lyrics)
+        // 뷰 계층 구조에 따라 배경 적용
+        Group {
+            if entry.isError {
+                // 에러 상태
+                ErrorView(message: entry.errorMessage ?? "알 수 없는 오류")
+            } else if let lyrics = entry.lyrics {
+                // 정상 상태
+                LyricsView(lyrics: lyrics)
+            } else {
+                // 로딩 중이거나 데이터 없음
+                Text("가사를 불러오는 중...")
+            }
         }
     }
 }
@@ -132,13 +138,17 @@ struct LyricsView: View {
                     .fontWeight(.semibold)
                     .foregroundColor(.secondary)
 
-                Text("\(lyrics.album) (\(lyrics.year))")
+                Text("\(lyrics.album) (\(String(lyrics.year)))")
                     .font(.caption2)
                     .foregroundColor(.secondary.opacity(0.7))
             }
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        // macOS 14 Sonoma 대응: 위젯 배경 설정
+        .containerBackground(for: .widget) {
+            Color.white // 배경색: 흰색 (원하는 색으로 변경 가능)
+        }
     }
 }
 
@@ -165,6 +175,10 @@ struct ErrorView: View {
                 .foregroundColor(.secondary)
         }
         .padding()
+        // 에러 화면에도 배경 설정
+        .containerBackground(for: .widget) {
+            Color(nsColor: .windowBackgroundColor) // 시스템 기본 배경색
+        }
     }
 }
 
@@ -178,8 +192,10 @@ struct DailyLyricsWidget: Widget {
             DailyLyricsWidgetView(entry: entry)
         }
         .configurationDisplayName("Daily Lyrics")
-        .description("매일 다른 태연 가사를 배경화면에 표시합니다")
+        .description("랜덤 가사를 배경화면에 표시합니다")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        // 콘텐츠 마진 비활성화 (배경 꽉 차게)
+        .contentMarginsDisabled()
     }
 }
 
@@ -200,5 +216,7 @@ struct DailyLyricsWidget_Previews: PreviewProvider {
             errorMessage: nil
         ))
         .previewContext(WidgetPreviewContext(family: .systemMedium))
+        // 프리뷰에서도 배경을 보기 위해 설정
+        .containerBackground(for: .widget) { Color.white }
     }
 }

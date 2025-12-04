@@ -63,7 +63,8 @@ class LyricsDatabase:
                                 'album': track_data.get('album', 'Unknown'),
                                 'year': track_data.get('year', 0),
                                 'track_number': track_data.get('track_number', 0),
-                                'artist': track_data.get('artist', '태연 (TAEYEON)')
+                                'artist': track_data.get('artist', '태연 (TAEYEON)'),
+                                'album_folder': album_folder.name  # 앨범 커버용 폴더명
                             })
                 except json.JSONDecodeError as e:
                     print(f"❌ JSON 파싱 오류: {track_file.name} - {e}")

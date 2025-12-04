@@ -1,6 +1,6 @@
 # Daily Lyrics Widget - macOS
 
-macOS 배경화면에 표시되는 태연 가사 위젯입니다.
+macOS 배경화면에 표시되는 랜덤 가사 위젯
 
 ## 요구사항
 

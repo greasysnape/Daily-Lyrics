@@ -24,7 +24,8 @@ struct LyricsProvider: TimelineProvider {
                 year: 2020,
                 artist: "태연 (TAEYEON)",
                 timestamp: ISO8601DateFormatter().string(from: Date()),
-                interval: "3h"
+                interval: "3h",
+                albumFolder: "013_What Do I Call You"
             ),
             errorMessage: nil
         )
@@ -116,20 +117,59 @@ struct LyricsView: View {
 
     var body: some View {
         ZStack {
-            // 배경 그라데이션
-            LinearGradient(
-                colors: [Color(white: 0.95), Color(white: 0.98)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            // 앨범 커버 배경
+            if let coverURL = lyrics.coverImageURL {
+                AsyncImage(url: coverURL) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    case .failure(_), .empty:
+                        // 이미지 로드 실패 시 기본 배경
+                        LinearGradient(
+                            colors: [Color(white: 0.95), Color(white: 0.98)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    @unknown default:
+                        LinearGradient(
+                            colors: [Color(white: 0.95), Color(white: 0.98)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    }
+                }
+            } else {
+                // 앨범 커버가 없을 경우 기본 배경
+                LinearGradient(
+                    colors: [Color(white: 0.95), Color(white: 0.98)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            }
 
-            VStack(alignment: .leading, spacing: family == .systemSmall ? 8 : 12) {
+            // 텍스트 가독성을 위한 어두운 오버레이
+            if lyrics.coverImageURL != nil {
+                LinearGradient(
+                    colors: [
+                        Color.black.opacity(0.4),
+                        Color.black.opacity(0.3)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            }
+
+            VStack(alignment: .leading, spacing: 12) {
                 // 가사 라인들
-                VStack(alignment: .leading, spacing: family == .systemSmall ? 4 : 6) {
+                VStack(alignment: .leading, spacing: 6) {
                     ForEach(displayLines, id: \.self) { line in
                         Text(line)
                             .font(lyricsFont)
-                            .foregroundColor(.primary)
+                            .fontWeight(.medium)
+                            .foregroundColor(lyrics.coverImageURL != nil ? .white : .primary)
+                            .shadow(color: .black.opacity(lyrics.coverImageURL != nil ? 0.3 : 0), radius: 2, x: 0, y: 1)
                             .lineLimit(1)
                     }
                 }
@@ -141,12 +181,14 @@ struct LyricsView: View {
                     Text(lyrics.title)
                         .font(.caption)
                         .fontWeight(.semibold)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(lyrics.coverImageURL != nil ? .white.opacity(0.9) : .secondary)
+                        .shadow(color: .black.opacity(lyrics.coverImageURL != nil ? 0.3 : 0), radius: 1, x: 0, y: 1)
                         .lineLimit(1)
 
                     Text("\(lyrics.album) (\(lyrics.year))")
                         .font(.caption2)
-                        .foregroundColor(.secondary.opacity(0.7))
+                        .foregroundColor(lyrics.coverImageURL != nil ? .white.opacity(0.8) : .secondary.opacity(0.7))
+                        .shadow(color: .black.opacity(lyrics.coverImageURL != nil ? 0.3 : 0), radius: 1, x: 0, y: 1)
                         .lineLimit(1)
                 }
             }
@@ -157,8 +199,6 @@ struct LyricsView: View {
     // 위젯 크기에 따라 표시할 라인 수 조정
     private var displayLines: [String] {
         switch family {
-        case .systemSmall:
-            return Array(lyrics.lines.prefix(2))
         case .systemMedium:
             return Array(lyrics.lines.prefix(3))
         case .systemLarge:
@@ -170,16 +210,7 @@ struct LyricsView: View {
 
     // 위젯 크기에 따른 폰트
     private var lyricsFont: Font {
-        switch family {
-        case .systemSmall:
-            return .caption
-        case .systemMedium:
-            return .body
-        case .systemLarge:
-            return .body
-        default:
-            return .body
-        }
+        return .body
     }
 }
 
@@ -192,16 +223,14 @@ struct ErrorView: View {
         ZStack {
             Color(white: 0.95)
 
-            VStack(spacing: family == .systemSmall ? 4 : 8) {
+            VStack(spacing: 8) {
                 Image(systemName: "wifi.slash")
-                    .font(family == .systemSmall ? .body : .title2)
+                    .font(.title2)
                     .foregroundColor(.orange)
 
-                if family != .systemSmall {
-                    Text("서버 연결 필요")
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                }
+                Text("서버 연결 필요")
+                    .font(.caption)
+                    .fontWeight(.semibold)
 
                 Text("Daily Lyrics 서버를\n실행해주세요")
                     .font(.caption2)
@@ -225,7 +254,7 @@ struct DailyLyricsWidget: Widget {
         }
         .configurationDisplayName("Daily Lyrics")
         .description("태연 가사를 홈 화면에 표시합니다")
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .supportedFamilies([.systemMedium, .systemLarge])
     }
 }
 
@@ -242,12 +271,13 @@ struct DailyLyricsWidget_Previews: PreviewProvider {
                     year: 2020,
                     artist: "태연 (TAEYEON)",
                     timestamp: ISO8601DateFormatter().string(from: Date()),
-                    interval: "3h"
+                    interval: "3h",
+                    albumFolder: "013_What Do I Call You"
                 ),
                 errorMessage: nil
             ))
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
-            .previewDisplayName("Small")
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
+            .previewDisplayName("Medium")
 
             DailyLyricsWidgetView(entry: LyricsEntry(
                 date: Date(),
@@ -258,12 +288,13 @@ struct DailyLyricsWidget_Previews: PreviewProvider {
                     year: 2020,
                     artist: "태연 (TAEYEON)",
                     timestamp: ISO8601DateFormatter().string(from: Date()),
-                    interval: "3h"
+                    interval: "3h",
+                    albumFolder: "013_What Do I Call You"
                 ),
                 errorMessage: nil
             ))
-            .previewContext(WidgetPreviewContext(family: .systemMedium))
-            .previewDisplayName("Medium")
+            .previewContext(WidgetPreviewContext(family: .systemLarge))
+            .previewDisplayName("Large")
         }
     }
 }
