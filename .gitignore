@@ -28,10 +28,10 @@ ENV/
 .venv
 
 # IDE
-.vscode/
-.claude/
-.idea/
-*.swp
+.vscode/*
+.claude/*
+.idea/*
+*.swps
 *.swo
 *~
 .DS_Store
