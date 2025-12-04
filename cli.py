@@ -16,7 +16,7 @@ project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
 from src.lyrics_database import LyricsDatabase
-from src.daily_selector import get_daily_lyric, get_random_lyric, parse_date
+from src.daily_selector import get_daily_lyric, get_random_lyric, get_interval_lyric, parse_date
 
 
 def format_lyric_output(chunk: dict, show_date: str = None) -> str:
@@ -94,7 +94,8 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 예시:
-  python cli.py                    # 오늘의 가사
+  python cli.py                    # 오늘의 가사 (24시간 주기)
+  python cli.py --interval 3h      # 3시간마다 바뀌는 가사
   python cli.py --random           # 완전 랜덤 가사
   python cli.py --date 2025-12-01  # 특정 날짜의 가사
   python cli.py --stats            # 통계 보기
@@ -102,9 +103,18 @@ def main():
     )
 
     parser.add_argument(
+        '--interval',
+        type=str,
+        choices=['1h', '3h', '6h', '12h', '24h'],
+        default='24h',
+        metavar='INTERVAL',
+        help='가사 변경 주기 (1h, 3h, 6h, 12h, 24h 중 선택, 기본: 24h)'
+    )
+
+    parser.add_argument(
         '--random',
         action='store_true',
-        help='완전 랜덤 가사 선택 (날짜 무관)'
+        help='완전 랜덤 가사 선택 (날짜/시간 무관)'
     )
 
     parser.add_argument(
@@ -143,7 +153,6 @@ def main():
 
     if args.random:
         chunk = get_random_lyric(db.get_all_chunks())
-        print("\n🎲 랜덤 가사:")
 
     elif args.date:
         target_date = parse_date(args.date)
@@ -152,14 +161,16 @@ def main():
             print("   올바른 형식: YYYY-MM-DD (예: 2025-12-03)\n")
             return 1
 
-        chunk = get_daily_lyric(db.get_all_chunks(), target_date)
+        # 특정 날짜 + interval 조합
+        target_datetime = datetime.combine(target_date, datetime.now().time())
+        chunk = get_interval_lyric(db.get_all_chunks(), args.interval, target_datetime)
         display_date = args.date
 
     else:
-        # 오늘의 가사 (기본)
-        chunk = get_daily_lyric(db.get_all_chunks())
-        today = date.today()
-        display_date = today.strftime('%Y-%m-%d')
+        # 오늘의 가사 (interval 적용)
+        chunk = get_interval_lyric(db.get_all_chunks(), args.interval)
+        now = datetime.now()
+        display_date = now.strftime('%Y-%m-%d')
 
     # 가사 출력
     if chunk:
