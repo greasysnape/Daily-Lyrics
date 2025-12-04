@@ -1,0 +1,7 @@
+# Daily Lyrics - 태연 일일 랜덤 가사
+# Phase 1 (CLI)에서는 Python 표준 라이브러리만 사용합니다.
+# Python 3.8 이상 필요
+
+# Phase 2 이후 필요한 패키지들 (아직 미사용):
+# tkinter는 Python 내장
+# Kivy는 나중에 추가 예정
