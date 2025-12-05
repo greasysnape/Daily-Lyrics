@@ -11,7 +11,7 @@ namespace DailyLyricsWidget
     public class LyricsAPIService
     {
         private static readonly HttpClient httpClient = new HttpClient();
-        private const string BASE_URL = "http://localhost:58384";  // 로컬 서버 주소
+        private const string BASE_URL = "http://127.0.0.1:58384";  // 로컬 서버 주소 (IPv4)
 
         static LyricsAPIService()
         {

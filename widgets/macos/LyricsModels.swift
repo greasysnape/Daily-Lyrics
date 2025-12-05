@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import WidgetKit
 
 /// API 응답 모델
 struct LyricsResponse: Codable {
@@ -47,6 +48,7 @@ struct LyricsEntry: TimelineEntry {
     let date: Date
     let lyrics: LyricsData?
     let errorMessage: String?
+    let coverImageData: Data?
 
     var isError: Bool {
         lyrics == nil

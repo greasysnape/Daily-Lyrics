@@ -24,9 +24,11 @@ struct LyricsProvider: TimelineProvider {
                 year: 2020,
                 artist: "태연 (TAEYEON)",
                 timestamp: ISO8601DateFormatter().string(from: Date()),
-                interval: "3h"
+                interval: "3h",
+                albumFolder: "013_What Do I Call You"
             ),
-            errorMessage: nil
+            errorMessage: nil,
+            coverImageData: nil
         )
     }
 
@@ -57,17 +59,35 @@ struct LyricsProvider: TimelineProvider {
 
         switch result {
         case .success(let lyricsData):
+            // 앨범 커버 이미지 다운로드
+            let coverImageData = await downloadCoverImage(from: lyricsData.coverImageURL)
+
             return LyricsEntry(
                 date: Date(),
                 lyrics: lyricsData,
-                errorMessage: nil
+                errorMessage: nil,
+                coverImageData: coverImageData
             )
         case .failure(let error):
             return LyricsEntry(
                 date: Date(),
                 lyrics: nil,
-                errorMessage: error.localizedDescription
+                errorMessage: error.localizedDescription,
+                coverImageData: nil
             )
+        }
+    }
+
+    // 앨범 커버 이미지 다운로드
+    private func downloadCoverImage(from url: URL?) async -> Data? {
+        guard let url = url else { return nil }
+
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            return data
+        } catch {
+            print("앨범 커버 다운로드 실패: \(error)")
+            return nil
         }
     }
 
@@ -105,7 +125,7 @@ struct DailyLyricsWidgetView: View {
                 ErrorView(message: entry.errorMessage ?? "알 수 없는 오류")
             } else if let lyrics = entry.lyrics {
                 // 정상 상태
-                LyricsView(lyrics: lyrics)
+                LyricsView(lyrics: lyrics, coverImageData: entry.coverImageData)
             } else {
                 // 로딩 중이거나 데이터 없음
                 Text("가사를 불러오는 중...")
@@ -117,6 +137,7 @@ struct DailyLyricsWidgetView: View {
 /// 가사 뷰
 struct LyricsView: View {
     let lyrics: LyricsData
+    let coverImageData: Data?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -125,7 +146,9 @@ struct LyricsView: View {
                 ForEach(lyrics.lines, id: \.self) { line in
                     Text(line)
                         .font(.body)
-                        .foregroundColor(.primary)
+                        .fontWeight(.medium)
+                        .foregroundColor(.white)
+                        .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
                 }
             }
 
@@ -136,18 +159,43 @@ struct LyricsView: View {
                 Text(lyrics.title)
                     .font(.caption)
                     .fontWeight(.semibold)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.white.opacity(0.9))
+                    .shadow(color: .black.opacity(0.3), radius: 1, x: 0, y: 1)
 
                 Text("\(lyrics.album) (\(String(lyrics.year)))")
                     .font(.caption2)
-                    .foregroundColor(.secondary.opacity(0.7))
+                    .foregroundColor(.white.opacity(0.8))
+                    .shadow(color: .black.opacity(0.3), radius: 1, x: 0, y: 1)
             }
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         // macOS 14 Sonoma 대응: 위젯 배경 설정
         .containerBackground(for: .widget) {
-            Color.white // 배경색: 흰색 (원하는 색으로 변경 가능)
+            if let imageData = coverImageData,
+               let nsImage = NSImage(data: imageData) {
+                // 앨범 커버 배경
+                GeometryReader { geometry in
+                    Image(nsImage: nsImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                        .clipped()
+                        .overlay(
+                            LinearGradient(
+                                colors: [
+                                    Color.black.opacity(0.4),
+                                    Color.black.opacity(0.3)
+                                ],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                }
+            } else {
+                // 앨범 커버가 없을 경우 기본 배경
+                Color.white
+            }
         }
     }
 }
@@ -192,8 +240,8 @@ struct DailyLyricsWidget: Widget {
             DailyLyricsWidgetView(entry: entry)
         }
         .configurationDisplayName("Daily Lyrics")
-        .description("랜덤 가사를 배경화면에 표시합니다")
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .description("매일 다른 태연 가사를 배경화면에 표시합니다")
+        .supportedFamilies([.systemMedium, .systemLarge])
         // 콘텐츠 마진 비활성화 (배경 꽉 차게)
         .contentMarginsDisabled()
     }
@@ -211,12 +259,12 @@ struct DailyLyricsWidget_Previews: PreviewProvider {
                 year: 2020,
                 artist: "태연 (TAEYEON)",
                 timestamp: ISO8601DateFormatter().string(from: Date()),
-                interval: "3h"
+                interval: "3h",
+                albumFolder: "013_What Do I Call You"
             ),
-            errorMessage: nil
+            errorMessage: nil,
+            coverImageData: nil
         ))
         .previewContext(WidgetPreviewContext(family: .systemMedium))
-        // 프리뷰에서도 배경을 보기 위해 설정
-        .containerBackground(for: .widget) { Color.white }
     }
 }

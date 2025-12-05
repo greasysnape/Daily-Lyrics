@@ -1,6 +1,8 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -82,6 +84,18 @@ namespace DailyLyricsWidget
                         TitleText.Text = lyrics.Title;
                         AlbumText.Text = $"{lyrics.Album} ({lyrics.Year})";
 
+                        // 앨범 커버 배경 로드
+                        var coverURL = lyrics.GetCoverImageURL();
+                        if (!string.IsNullOrEmpty(coverURL))
+                        {
+                            LoadAlbumCover(coverURL);
+                        }
+                        else
+                        {
+                            // 앨범 커버 없을 경우 기본 배경 및 검정색 텍스트
+                            SetDefaultBackground();
+                        }
+
                         ContentPanel.Visibility = Visibility.Visible;
                         ErrorPanel.Visibility = Visibility.Collapsed;
                     });
@@ -156,6 +170,44 @@ namespace DailyLyricsWidget
             updateTimer?.Stop();
             this.Close();
             Application.Current.Exit();
+        }
+
+        /// <summary>
+        /// 앨범 커버 배경 이미지 로드
+        /// </summary>
+        private void LoadAlbumCover(string imageURL)
+        {
+            try
+            {
+                var bitmap = new BitmapImage(new Uri(imageURL));
+                BackgroundImage.ImageSource = bitmap;
+                BackgroundImage.Opacity = 1.0;
+                DarkOverlay.Opacity = 1.0;
+
+                // 흰색 텍스트로 변경
+                LyricsText.Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 255, 255));
+                TitleText.Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(230, 255, 255, 255));
+                AlbumText.Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(204, 255, 255, 255));
+            }
+            catch
+            {
+                // 이미지 로드 실패 시 기본 배경 사용
+                SetDefaultBackground();
+            }
+        }
+
+        /// <summary>
+        /// 기본 배경 설정 (앨범 커버 없을 때)
+        /// </summary>
+        private void SetDefaultBackground()
+        {
+            BackgroundImage.Opacity = 0;
+            DarkOverlay.Opacity = 0;
+
+            // 검정색 텍스트로 변경
+            LyricsText.Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 0, 0, 0));
+            TitleText.Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 102, 102, 102));
+            AlbumText.Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 153, 153, 153));
         }
     }
 }

@@ -23,5 +23,17 @@ data class LyricsData(
     val year: Int,
     val artist: String,
     val timestamp: String,
-    val interval: String? = null
-)
+    val interval: String? = null,
+    val albumFolder: String? = null
+) {
+    /**
+     * 앨범 커버 URL 생성
+     */
+    fun getCoverImageURL(baseURL: String = "http://10.0.2.2:58384"): String? {
+        if (albumFolder.isNullOrEmpty()) return null
+
+        // URL 인코딩 (세미콜론 등 특수문자 처리)
+        val encodedFilename = java.net.URLEncoder.encode("$albumFolder.webp", "UTF-8")
+        return "$baseURL/covers/$encodedFilename"
+    }
+}

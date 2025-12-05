@@ -1,11 +1,12 @@
 //
 //  LyricsModels.swift
-//  Daily Lyrics Widget - macOS
+//  Daily Lyrics Widget - iOS
 //
 //  데이터 모델 정의
 //
 
 import Foundation
+import WidgetKit
 
 /// API 응답 모델
 struct LyricsResponse: Codable {

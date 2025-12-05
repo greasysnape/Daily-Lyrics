@@ -16,11 +16,15 @@
     ShowInTaskbar="False">
 
     <Border
-        Background="#F5F5F5"
         CornerRadius="16"
         Padding="20"
         BorderBrush="#E0E0E0"
         BorderThickness="1">
+
+        <Border.Background>
+            <!-- 기본 배경 (앨범 커버 없을 때) -->
+            <SolidColorBrush x:Name="DefaultBackground" Color="#F5F5F5"/>
+        </Border.Background>
 
         <Border.Effect>
             <DropShadowEffect
@@ -31,6 +35,13 @@
         </Border.Effect>
 
         <Grid>
+            <!-- 앨범 커버 배경 이미지 -->
+            <Grid.Background>
+                <ImageBrush x:Name="BackgroundImage" Stretch="UniformToFill" Opacity="0"/>
+            </Grid.Background>
+
+            <!-- 어두운 오버레이 (텍스트 가독성용) -->
+            <Rectangle x:Name="DarkOverlay" Fill="#66000000" Opacity="0"/>
             <!-- 정상 상태: 가사 표시 -->
             <StackPanel x:Name="ContentPanel" Visibility="Visible">
                 <!-- 가사 텍스트 -->
@@ -39,8 +50,10 @@
                     TextWrapping="Wrap"
                     FontSize="16"
                     LineHeight="24"
-                    Foreground="#000000"
                     Margin="0,0,0,20">
+                    <TextBlock.Effect>
+                        <DropShadowEffect Color="Black" Opacity="0.3" ShadowDepth="1" BlurRadius="2"/>
+                    </TextBlock.Effect>
                     익숙함에 수줍어<LineBreak/>
                     네게 하지 못한 말<LineBreak/>
                     노랫말에 가득 담아
@@ -52,14 +65,20 @@
                         x:Name="TitleText"
                         FontSize="12"
                         FontWeight="SemiBold"
-                        Foreground="#666666"
-                        Text="Playlist"/>
+                        Text="Playlist">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="Black" Opacity="0.3" ShadowDepth="1" BlurRadius="1"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
 
                     <TextBlock
                         x:Name="AlbumText"
                         FontSize="10"
-                        Foreground="#999999"
-                        Text="What Do I Call You (2020)"/>
+                        Text="What Do I Call You (2020)">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="Black" Opacity="0.3" ShadowDepth="1" BlurRadius="1"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
                 </StackPanel>
             </StackPanel>
 

@@ -48,6 +48,8 @@ htmlcov/
 data/*
 !data/example_album/
 !data/example_album/example_track.json
+data/covers/*
+!data/covers
 
 lyrics_input/*
 !lyrics_input/example_album/

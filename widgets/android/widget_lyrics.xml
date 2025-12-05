@@ -3,9 +3,36 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@drawable/widget_background">
+    android:layout_height="match_parent">
+
+    <!-- 앨범 커버 배경 -->
+    <ImageView
+        android:id="@+id/widget_background_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="Album Cover Background" />
+
+    <!-- 기본 배경 (앨범 커버 없을 때) -->
+    <View
+        android:id="@+id/widget_background_default"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/widget_background" />
+
+    <!-- 어두운 오버레이 (텍스트 가독성용) -->
+    <View
+        android:id="@+id/widget_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#66000000"
+        android:visibility="gone" />
+
+    <!-- 콘텐츠 영역 -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
     <!-- 정상 상태: 가사 표시 -->
     <LinearLayout
@@ -23,10 +50,14 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:textSize="14sp"
-            android:textColor="#000000"
+            android:textColor="#FFFFFF"
             android:lineSpacingExtra="4dp"
             android:text="익숙함에 수줍어\n네게 하지 못한 말\n노랫말에 가득 담아"
-            android:gravity="top" />
+            android:gravity="top"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="2" />
 
         <!-- 곡 정보 -->
         <LinearLayout
@@ -40,17 +71,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                android:textColor="#666666"
+                android:textColor="#E6FFFFFF"
                 android:textStyle="bold"
-                android:text="Playlist" />
+                android:text="Playlist"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="1" />
 
             <TextView
                 android:id="@+id/widget_album"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="10sp"
-                android:textColor="#999999"
-                android:text="What Do I Call You (2020)" />
+                android:textColor="#CCFFFFFF"
+                android:text="What Do I Call You (2020)"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="1" />
         </LinearLayout>
     </LinearLayout>
 
@@ -79,4 +118,6 @@
             android:gravity="center"
             android:text="서버 연결 필요" />
     </LinearLayout>
+
+    </FrameLayout>
 </FrameLayout>

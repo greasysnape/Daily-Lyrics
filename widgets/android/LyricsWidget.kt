@@ -3,10 +3,14 @@ package com.example.dailylyrics
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.widget.RemoteViews
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.net.URL
 
 /**
  * Daily Lyrics 위젯 Provider
@@ -53,6 +57,27 @@ class LyricsWidget : AppWidgetProvider() {
                     "${lyricsData.album} (${lyricsData.year})"
                 )
 
+                // 앨범 커버 배경 로드
+                val coverURL = lyricsData.getCoverImageURL()
+                if (coverURL != null) {
+                    loadAlbumCover(coverURL) { bitmap ->
+                        if (bitmap != null) {
+                            views.setImageViewBitmap(R.id.widget_background_image, bitmap)
+                            views.setViewVisibility(R.id.widget_background_default, android.view.View.GONE)
+                            views.setViewVisibility(R.id.widget_overlay, android.view.View.VISIBLE)
+                        } else {
+                            // 이미지 로드 실패 시 기본 배경 사용
+                            views.setViewVisibility(R.id.widget_background_default, android.view.View.VISIBLE)
+                            views.setViewVisibility(R.id.widget_overlay, android.view.View.GONE)
+                        }
+                        appWidgetManager.updateAppWidget(appWidgetId, views)
+                    }
+                } else {
+                    // 앨범 커버 없을 경우 기본 배경
+                    views.setViewVisibility(R.id.widget_background_default, android.view.View.VISIBLE)
+                    views.setViewVisibility(R.id.widget_overlay, android.view.View.GONE)
+                }
+
                 // 에러 메시지 숨기기
                 views.setViewVisibility(R.id.widget_error, android.view.View.GONE)
                 views.setViewVisibility(R.id.widget_content, android.view.View.VISIBLE)
@@ -77,5 +102,24 @@ class LyricsWidget : AppWidgetProvider() {
 
     override fun onDisabled(context: Context) {
         // 마지막 위젯이 제거될 때
+    }
+
+    /**
+     * 앨범 커버 이미지 로드
+     */
+    private fun loadAlbumCover(imageURL: String, callback: (Bitmap?) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val url = URL(imageURL)
+                val bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+                withContext(Dispatchers.Main) {
+                    callback(bitmap)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    callback(null)
+                }
+            }
+        }
     }
 }

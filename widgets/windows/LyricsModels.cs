@@ -42,5 +42,21 @@ namespace DailyLyricsWidget
 
         [JsonPropertyName("interval")]
         public string? Interval { get; set; }
+
+        [JsonPropertyName("albumFolder")]
+        public string? AlbumFolder { get; set; }
+
+        /// <summary>
+        /// 앨범 커버 URL 생성
+        /// </summary>
+        public string? GetCoverImageURL(string baseURL = "http://127.0.0.1:58384")
+        {
+            if (string.IsNullOrEmpty(AlbumFolder))
+                return null;
+
+            // URL 인코딩 (세미콜론 등 특수문자 처리)
+            var encodedFilename = Uri.EscapeDataString($"{AlbumFolder}.webp");
+            return $"{baseURL}/covers/{encodedFilename}";
+        }
     }
 }
