@@ -140,44 +140,14 @@ struct LyricsView: View {
     let coverImageData: Data?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // 가사 라인들
-            VStack(alignment: .leading, spacing: 6) {
-                ForEach(lyrics.lines, id: \.self) { line in
-                    Text(line)
-                        .font(.body)
-                        .fontWeight(.medium)
-                        .foregroundColor(.white)
-                        .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
-                }
-            }
-
-            Spacer()
-
-            // 곡 정보
-            VStack(alignment: .leading, spacing: 2) {
-                Text(lyrics.title)
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.white.opacity(0.9))
-                    .shadow(color: .black.opacity(0.3), radius: 1, x: 0, y: 1)
-
-                Text("\(lyrics.album) (\(String(lyrics.year)))")
-                    .font(.caption2)
-                    .foregroundColor(.white.opacity(0.8))
-                    .shadow(color: .black.opacity(0.3), radius: 1, x: 0, y: 1)
-            }
-        }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        // macOS 14 Sonoma 대응: 위젯 배경 설정
-        .containerBackground(for: .widget) {
+        ZStack {
+            // 배경 레이어 - containerBackground 밖에 직접 배치
             if let imageData = coverImageData,
                let nsImage = NSImage(data: imageData) {
-                // 앨범 커버 배경
                 GeometryReader { geometry in
                     Image(nsImage: nsImage)
                         .resizable()
+                        .interpolation(.high)
                         .aspectRatio(contentMode: .fill)
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         .clipped()
@@ -193,9 +163,44 @@ struct LyricsView: View {
                         )
                 }
             } else {
-                // 앨범 커버가 없을 경우 기본 배경
                 Color.white
             }
+
+            // 가사 콘텐츠 레이어
+            VStack(alignment: .leading, spacing: 12) {
+                // 가사 라인들
+                VStack(alignment: .leading, spacing: 6) {
+                    ForEach(lyrics.lines, id: \.self) { line in
+                        Text(line)
+                            .font(.body)
+                            .fontWeight(.medium)
+                            .foregroundColor(.white)
+                            .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
+                    }
+                }
+
+                Spacer()
+
+                // 곡 정보
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(lyrics.title)
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white.opacity(0.9))
+                        .shadow(color: .black.opacity(0.3), radius: 1, x: 0, y: 1)
+
+                    Text("\(lyrics.album) (\(String(lyrics.year)))")
+                        .font(.caption2)
+                        .foregroundColor(.white.opacity(0.8))
+                        .shadow(color: .black.opacity(0.3), radius: 1, x: 0, y: 1)
+                }
+            }
+            .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        }
+        // macOS 14 Sonoma 대응: containerBackground는 투명하게
+        .containerBackground(for: .widget) {
+            Color.clear
         }
     }
 }
@@ -205,27 +210,33 @@ struct ErrorView: View {
     let message: String
 
     var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: "exclamationmark.triangle")
-                .font(.title)
-                .foregroundColor(.orange)
+        ZStack {
+            // 배경
+            Color(nsColor: .windowBackgroundColor)
 
-            Text("연결 오류")
-                .font(.headline)
+            // 에러 콘텐츠
+            VStack(spacing: 8) {
+                Image(systemName: "exclamationmark.triangle")
+                    .font(.title)
+                    .foregroundColor(.orange)
 
-            Text(message)
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
+                Text("연결 오류")
+                    .font(.headline)
 
-            Text("서버가 실행 중인지 확인하세요")
-                .font(.caption2)
-                .foregroundColor(.secondary)
+                Text(message)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+
+                Text("서버가 실행 중인지 확인하세요")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+            .padding()
         }
-        .padding()
-        // 에러 화면에도 배경 설정
+        // containerBackground는 투명하게
         .containerBackground(for: .widget) {
-            Color(nsColor: .windowBackgroundColor) // 시스템 기본 배경색
+            Color.clear
         }
     }
 }

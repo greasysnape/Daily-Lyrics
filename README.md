@@ -2,29 +2,31 @@
 
 노래 가사를 랜덤으로 표시하는 위젯 시스템입니다.
 
+![사용 예시](usage_example.png)
+
 - 개인적/비상업적 용도만 허용합니다.
 - 가사 데이터베이스는 원하는 곡들로 직접 생성해야 합니다.
 - (* 가수 태연의 솔로곡 가사 데이터베이스는 직접 제작 중입니다. 개인적으로 요청주시면 완성 후 공유해 드리겠습니다.)
 
-## ✨ 특징
+## 특징
 
-- 🖼️ **앨범 커버 배경**: 가사와 함께 해당 곡의 앨범 커버를 배경으로 표시
-- 📱 **멀티플랫폼 위젯**: macOS, iOS, Android, Windows 지원
-- 📅 **자동 업데이트**: 설정한 시간 간격마다 새로운 가사로 자동 변경
-- ⏰ **시간 주기 설정**: 1시간, 3시간, 6시간, 12시간, 24시간 단위로 가사 변경
-- 🎲 **랜덤 모드**: 원할 때 완전 랜덤 가사 보기 (API 엔드포인트)
-- 📁 **체계적 관리**: 앨범별, 트랙별로 가사 데이터 구조화
-- 🌐 **REST API**: FastAPI 기반 경량 서버
+- **앨범 커버 배경**: 가사와 함께 해당 곡의 앨범 커버를 배경으로 표시
+- **멀티플랫폼 위젯**: macOS, iOS, Android, Windows 지원
+- **자동 업데이트**: 설정한 시간 간격마다 새로운 가사로 자동 변경
+- **시간 주기 설정**: 1시간, 3시간, 6시간, 12시간, 24시간 단위로 가사 변경
+- **랜덤 모드**: 원할 때 완전 랜덤 가사 보기 (API 엔드포인트)
+- **체계적 관리**: 앨범별, 트랙별로 가사 데이터 구조화
+- **REST API**: FastAPI 기반 경량 서버
 
-## 🚀 시작하기
+## 시작하기
 
 ### 필요 사항
 
 - Python 3.8 이상
 - macOS 14+ (macOS 위젯)
-- iOS 16+ (iOS 위젯)
-- Android 8.0+ (Android 위젯)
-- Windows 11 (Windows 위젯)
+- (tbd) iOS 16+ (iOS 위젯)
+- (tbd) Android 8.0+ (Android 위젯)
+- (tbd) Windows 11 (Windows 위젯)
 
 ### 설치
 
@@ -111,7 +113,7 @@ data/covers/
 - WebP 또는 JPEG 형식
 - 권장 크기: 1000×1000px 이상
 
-## 📖 사용법
+## 사용법
 
 ### 1. 서버 실행
 
@@ -164,7 +166,7 @@ tail -f ~/Library/Logs/DailyLyricsWidget.log
 
 **지원 크기**: Medium, Large
 
-#### iOS 위젯
+#### (미완) iOS 위젯
 
 1. Xcode에서 iOS 디바이스 선택
 2. "Daily Lyrics iOS WidgetExtension" 타겟으로 실행
@@ -173,13 +175,13 @@ tail -f ~/Library/Logs/DailyLyricsWidget.log
 
 **지원 크기**: Medium, Large
 
-#### Android 위젯
+#### (미완) Android 위젯
 
 1. Android Studio에서 프로젝트 열기 (`widgets/android/`)
 2. 앱 빌드 및 설치
 3. 홈 화면 롱프레스 → 위젯 → Daily Lyrics 선택
 
-#### Windows 위젯
+#### (미완) Windows 위젯
 
 1. Visual Studio에서 프로젝트 열기 (`widgets/windows/`)
 2. WinUI 3 앱 빌드 및 실행
@@ -217,7 +219,7 @@ python3 cli.py --stats
 - `GET /health` - 서버 상태 확인
 - `GET /covers/{filename}` - 앨범 커버 이미지
 
-## 📂 프로젝트 구조
+## 프로젝트 구조
 
 ```
 Daily Lyrics/
@@ -244,7 +246,7 @@ Daily Lyrics/
 └── README.md
 ```
 
-## ⚙️ 설정
+## 설정
 
 ### 위젯 업데이트 간격 변경
 
@@ -265,16 +267,14 @@ private const val DEFAULT_INTERVAL = "3h"
 private const string DEFAULT_INTERVAL = "3h";
 ```
 
-## 🎯 로드맵
+## 로드맵
 
 - [x] **Phase 1**: CLI 기본 기능
 - [x] **Phase 2**: REST API 백엔드 (FastAPI)
-- [x] **Phase 3**: 멀티플랫폼 위젯 (macOS, iOS, Android, Windows)
-- [x] **Phase 4**: 앨범 커버 배경 이미지
-- [ ] **Phase 5**: 위젯 설정 UI (간격 변경, 테마 선택)
-- [ ] **Phase 6**: 가사 공유 기능
+- [ ] **Phase 3**: 멀티플랫폼 위젯 (macOS 완성, iOS, Android, Windows 미완성)
+- [ ] **Phase 4**: 위젯 설정 UI (간격 변경, interval 설정)
 
-## 💡 팁
+## 팁
 
 ### 별칭 만들기 (CLI 사용 시)
 
@@ -288,7 +288,7 @@ alias lyrics="python3 '/Path/to/Daily Lyrics/cli.py'"
 
 ### 서버 포트 변경
 
-기본 포트 58384를 변경하려면:
+기본 포트 58384를 변경 방법:
 
 1. `src/widget_service.py`의 uvicorn 실행 명령에서 `--port` 변경
 2. 각 위젯의 API 서비스 파일에서 baseURL 포트 변경
@@ -306,37 +306,6 @@ tail -f ~/Library/Logs/DailyLyricsWidget.log
 
 # 서버 수동 실행 시 콘솔에서 직접 확인
 ```
-
-위젯이 서버에 요청을 보낼 때마다 로그에 표시됩니다.
-
-## 🐛 문제 해결
-
-### 위젯에 가사가 표시되지 않음
-
-1. 서버가 실행 중인지 확인:
-   ```bash
-   curl http://127.0.0.1:58384/health
-   ```
-
-2. launchd 서비스 상태 확인 (macOS):
-   ```bash
-   launchctl list | grep dailylyrics
-   ```
-
-3. 위젯을 제거하고 다시 추가
-
-### 앨범 커버가 표시되지 않음
-
-1. `data/covers/` 폴더에 이미지 파일이 있는지 확인
-2. 파일명이 앨범 폴더명과 일치하는지 확인 (예: `001_I.webp`)
-3. 서버 로그에서 `/covers/` 엔드포인트 요청 확인
-
-### iOS 위젯에서 연결 오류
-
-iOS는 localhost를 지원하지 않으므로:
-1. Mac과 iPhone이 같은 Wi-Fi에 연결
-2. Mac의 로컬 IP 주소 확인: `ifconfig | grep inet`
-3. 위젯의 baseURL을 Mac의 IP로 변경 (예: `http://192.168.1.100:58384`)
 
 ## 📝 저작권 고려사항
 

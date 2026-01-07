@@ -127,10 +127,15 @@ private let interval = "3h"  // 1h, 3h, 6h, 12h, 24h 중 선택
    launchctl load ~/Library/LaunchAgents/com.dailylyrics.widget.plist
    ```
 
-### 위젯이 업데이트되지 않음
+### macOS 다른 창이 열려있을 때 앨범 커버가 회색조/흑백으로 표시됨
 
-- 위젯 우클릭 > `Reload Widget`
-- 또는 위젯을 제거했다가 다시 추가
+다른 창이 열려있을 때 위젯의 앨범 커버가 회색조로 변하는 경우:
+1. **시스템 설정** (System Settings) 열기
+2. **데스크탑 & 독** (Desktop & Dock) 선택
+3. **위젯** (Widgets) 섹션 찾기
+4. **위젯 스타일**을 "흑백"에서 **"풀 컬러 (Full-colour)"**로 변경
+
+이 설정을 변경하면 다른 창이 열려있어도 위젯의 앨범 커버가 원래 색상으로 표시됩니다.
 
 ### 빌드 에러 발생
 
